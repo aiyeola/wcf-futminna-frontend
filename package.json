@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint '*/**/*.{js,ts,jsx,tsx}' --quiet --fix",
+    "lint": "pretty-quick --staged",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "dependencies": {
@@ -50,10 +50,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
   }
 }
