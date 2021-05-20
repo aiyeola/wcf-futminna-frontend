@@ -3,8 +3,5 @@ export interface InitialState {
     isLoggedIn: boolean;
     message?: string;
     error?: string;
-    
-    
-
   };
 }
