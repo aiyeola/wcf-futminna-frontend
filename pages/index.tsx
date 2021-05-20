@@ -1,3 +1,3 @@
 export default function Index() {
-  return <>This is the start page</>;
+  return <>This is the start page test</>;
 }
