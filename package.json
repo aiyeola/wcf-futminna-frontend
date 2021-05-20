@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+    "lint": "eslint '*/**/*.{js,ts,jsx,tsx}' --quiet --fix",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "dependencies": {
@@ -16,9 +16,15 @@
     "next": "^10.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-redux": "^7.2.4",
+    "redux": "^4.1.0",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.3.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
     "@types/material-ui": "^0.21.8",
     "@types/react": "^17.0.6",
     "@types/react-redux": "^7.1.16",
@@ -45,14 +51,15 @@
       "last 1 safari version"
     ]
   },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": [
+      "yarn lint",
+      "git add"
+    ]
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx}": [
-      "eslint --fix"
-    ]
   }
 }
