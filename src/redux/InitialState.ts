@@ -5,5 +5,6 @@ export interface InitialState {
     error?: string;
     
     
+    
   };
 }
