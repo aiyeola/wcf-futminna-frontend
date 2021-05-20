@@ -1,0 +1,24 @@
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+
+Example
+///
+feat(login): user can login via google and facebook
+
+this will be a sample body commit showing how to write commits in the conventional way
+
+BREAKING CHANGE: you want to become world class 🌍 then you must pay the price
+
+Example
+///
+fix: correct minor typos in code
+
+see the issue for details
+
+on typos fixed.
+
+Reviewed-by: Z
+Refs #133

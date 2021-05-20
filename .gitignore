@@ -21,7 +21,6 @@ yarn-error.log*
 storybook-static
 package-lock.json
 
-.env*
 .env
 .idea
 .idea/inspectionProfiles/Project_Default.xml

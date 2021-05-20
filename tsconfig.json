@@ -13,8 +13,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": ".",
     "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
     "paths": {
       "@components/*": ["src/components/*"],
       "@redux/*": ["src/redux/*"],
