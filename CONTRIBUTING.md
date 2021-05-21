@@ -34,22 +34,16 @@ git pull upstream develop
 yarn install
 ````
 
-5. Install the husky hook script:
-
-```sh
-yarn husky install
-```
-
-6. Create a new branch:
+5. Create a new branch:
 
 ```sh
 git checkout -b <new branch>
 ```
 
-7. Make changes, commit and push to your fork
+6. Make changes, commit and push to your fork
 
 ```sh
 git push -u origin HEAD
 ```
 
-8. Go to [the repository](https://github.com/aiyeola/wcf-futminna-frontend.git) and make a Pull Request.
+7. Go to [the repository](https://github.com/aiyeola/wcf-futminna-frontend.git) and make a Pull Request.

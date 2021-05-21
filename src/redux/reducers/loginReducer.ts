@@ -5,7 +5,7 @@ import {
   LOGIN_FAILURE,
   LOGIN_RESET,
 } from '@redux/actions/actionTypes';
-import { InitialState } from '@redux/InitialState`';
+import { InitialState } from '@redux/InitialState';
 import { DispatchAction } from '@redux/actions/loginAction';
 
 const initialState: InitialState['logIn'] = {
