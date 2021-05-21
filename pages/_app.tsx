@@ -6,10 +6,10 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { Provider } from 'react-redux';
 
 import theme from 'src/theme';
-// import { useStore } from '@redux/store';
+import { useStore } from '@redux/store';
 
 function App({ Component, pageProps }: AppProps) {
-  //   const store = useStore(pageProps.initialReduxState);
+  const store = useStore(pageProps.initialReduxState);
 
   useEffect(() => {
     // Remove the server-side injected CSS.
@@ -26,9 +26,9 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {/* <Provider store={store}> */}
-        <Component {...pageProps} />
-        {/* </Provider> */}
+        <Provider store={store}>
+          <Component {...pageProps} />
+        </Provider>
       </ThemeProvider>
     </>
   );
