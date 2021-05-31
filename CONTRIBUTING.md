@@ -22,17 +22,16 @@ git remote add upstream https://github.com/aiyeola/wcf-futminna-frontend.git
 
 3. Synchronize your local `develop` branch with the upstream one:
 
-```sh`
+```sh
 git checkout develop
 git pull upstream develop
-
-````
+```
 
 4. Install the dependencies with yarn:
 
 ```sh
 yarn install
-````
+```
 
 5. Create a new branch:
 
