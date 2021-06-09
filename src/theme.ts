@@ -1,7 +1,22 @@
+import '@fontsource/poppins';
+import grey from '@material-ui/core/colors/grey';
+
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
 
 let theme = createMuiTheme({
-  props: {},
+  palette: {
+    primary: {
+      main: grey[400],
+    },
+  },
+  typography: {
+    fontFamily: 'Poppins',
+  },
+  props: {
+    MuiLink: {
+      underline: 'none',
+    },
+  },
   overrides: {},
 });
 

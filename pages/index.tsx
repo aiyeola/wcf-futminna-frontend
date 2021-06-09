@@ -1,3 +1,10 @@
+import React from 'react';
+import Router from 'next/router';
+
 export default function Index() {
-  return <>This is the start page test</>;
+  React.useEffect(() => {
+    Router.push('/admin/dashboard');
+  });
+
+  return <div />;
 }

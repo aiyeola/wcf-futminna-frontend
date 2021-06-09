@@ -18,9 +18,12 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@redux/*": ["src/redux/*"],
+      "@layouts/*": ["src/layouts/*"],
       "@helpers/*": ["src/helpers/*"],
       "@mocks/*": ["src/__mocks__/*"],
-      "@api/*": ["src/API/*"]
+      "@api/*": ["src/API/*"],
+      "@styles/*": ["src/styles/*"],
+      "types/*": ["src/types/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

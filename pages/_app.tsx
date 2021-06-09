@@ -1,14 +1,21 @@
 import React, { useEffect } from 'react';
 import Head from 'next/head';
-import { AppProps } from 'next/app';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Provider } from 'react-redux';
 
+import '@styles/css/global.css';
 import theme from 'src/theme';
 import { useStore } from '@redux/store';
+import { NextPageWithLayout } from 'types/index';
 
-function App({ Component, pageProps }: AppProps) {
+type Props = {
+  Component: NextPageWithLayout;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  pageProps: any;
+};
+
+function App({ Component, pageProps }: Props) {
   const store = useStore(pageProps.initialReduxState);
 
   useEffect(() => {
@@ -19,6 +26,8 @@ function App({ Component, pageProps }: AppProps) {
     }
   }, []);
 
+  const getLayout = Component.getLayout || ((page) => page);
+
   return (
     <>
       <Head>
@@ -27,7 +36,7 @@ function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Provider store={store}>
-          <Component {...pageProps} />
+          {getLayout(<Component {...pageProps} />)}
         </Provider>
       </ThemeProvider>
     </>

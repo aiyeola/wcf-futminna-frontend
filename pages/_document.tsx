@@ -7,11 +7,15 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          {/* PWA primary color */}
           <meta name="theme-color" content="#000" />
           <meta charSet="utf-8" />
           <meta httpEquiv="x-ua-compatible" content="ie-edge" />
           <meta property="og:locale" content="en_GB" />
+          <link
+            rel="stylesheet"
+            href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css"
+          />
+          <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js" />
         </Head>
         <body>
           <Main />
