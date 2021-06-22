@@ -3,6 +3,8 @@ import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Provider } from 'react-redux';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 import '@styles/css/global.css';
 import theme from 'src/theme';
@@ -14,6 +16,8 @@ type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   pageProps: any;
 };
+
+const queryClient = new QueryClient();
 
 function App({ Component, pageProps }: Props) {
   const store = useStore(pageProps.initialReduxState);
@@ -33,12 +37,15 @@ function App({ Component, pageProps }: Props) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Provider store={store}>
-          {getLayout(<Component {...pageProps} />)}
-        </Provider>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Provider store={store}>
+            {getLayout(<Component {...pageProps} />)}
+          </Provider>
+        </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </>
   );
 }

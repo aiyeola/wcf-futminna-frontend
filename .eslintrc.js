@@ -22,5 +22,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 0,
     'react/display-name': 0,
     'react/prop-types': 0,
+    'react/jsx-key': 0,
+    '@typescript-eslint/ban-ts-comment': 0,
   },
 };
