@@ -23,7 +23,9 @@
       "@mocks/*": ["src/__mocks__/*"],
       "@api/*": ["src/api/*"],
       "@styles/*": ["src/styles/*"],
-      "types/*": ["src/types/*"]
+      "types/*": ["src/types/*"],
+      "@config/*": ["src/config/*"],
+      "@HOC/*": ["src/HOC/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
