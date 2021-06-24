@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     background: '#ffcc66',
     color: '#fff',
     fontWeight: 'bold',
-    '&:hover': {},
   },
 }));
 
@@ -90,38 +89,41 @@ export default function LogIn() {
       password,
     };
 
-    //@ts-ignore
     login(loginDetails);
   };
 
-  useEffect(() => {
-    if (isError) {
-      //@ts-ignore
-      if (error.message.includes(401)) {
-        setAlert({
-          open: true,
-          message: 'Invalid username or password',
-          backgroundColor: theme.palette.error.main,
-        });
-        setValues({ ...values, username: '', password: '' });
-      } else {
-        setAlert({
-          open: true,
-          //@ts-ignore
-          message: error?.message,
-          backgroundColor: theme.palette.error.main,
-        });
-      }
+  if (isError) {
+    //@ts-ignore
+    if (error.response && error.response.status === 401) {
+      setAlert({
+        open: true,
+        //@ts-ignore
+        message: error.response.data.message,
+        backgroundColor: theme.palette.error.main,
+      });
+      setValues({ ...values, username: '', password: '' });
+    } else {
+      setAlert({
+        open: true,
+        //@ts-ignore
+        message: error.message,
+        backgroundColor: theme.palette.error.main,
+      });
     }
-  }, [isError]);
+  }
 
-  useEffect(() => {
-    if (isSuccess) {
-      localStorage.setItem('access_token', data.data.accessToken);
-      localStorage.setItem('refresh_token', data.data.refreshToken);
+  const nextRoute = router.query.next as string;
+
+  if (data && isSuccess) {
+    localStorage.setItem('access_token', data.data.accessToken);
+    localStorage.setItem('refresh_token', data.data.refreshToken);
+
+    if (nextRoute) {
+      router.push(nextRoute);
+    } else {
       router.push('/admin/dashboard');
     }
-  }, [isSuccess]);
+  }
 
   useEffect(() => {
     router.prefetch('/admin/dashboard');
