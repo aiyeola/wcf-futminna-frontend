@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -82,6 +83,7 @@ const rows = [
 ];
 
 const useStyles = makeStyles({
+  root: {},
   container: {
     position: 'relative',
     minHeight: 300,
@@ -97,7 +99,7 @@ let ps;
 export default function DataTable() {
   const classes = useStyles();
 
-  const tableScroll = useRef();
+  const TableScroll = useRef();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -105,7 +107,7 @@ export default function DataTable() {
   // initialize and destroy the PerfectScrollbar plugin
   useEffect(() => {
     if (navigator.platform.includes('Win')) {
-      ps = new PerfectScrollbar(tableScroll.current);
+      ps = new PerfectScrollbar(TableScroll.current);
       document.body.style.overflow = 'hidden';
     }
     // Specify how to clean up after this effect:
@@ -114,7 +116,7 @@ export default function DataTable() {
         ps.destroy();
       }
     };
-  }, [tableScroll]);
+  }, [TableScroll]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -128,8 +130,8 @@ export default function DataTable() {
   };
 
   return (
-    <>
-      <TableContainer className={classes.container} ref={tableScroll}>
+    <Paper className={classes.root}>
+      <TableContainer className={classes.container} ref={TableScroll}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -137,7 +139,7 @@ export default function DataTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth, fontWeight: 600 }}
+                  style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
                 </TableCell>
@@ -180,6 +182,6 @@ export default function DataTable() {
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
-    </>
+    </Paper>
   );
 }
