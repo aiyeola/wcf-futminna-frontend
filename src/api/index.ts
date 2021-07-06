@@ -35,4 +35,11 @@ const useRefreshToken = () => {
   );
 };
 
-export { useLogin, useCheckUser, useRefreshToken };
+const useDataGroupByField = (field: string) => {
+  const config = getToken();
+  return useQuery(['getBioData', field], ({ queryKey }) =>
+    axios.get(`${API_URL}/bio-data/?field=${queryKey[1]}`, config),
+  );
+};
+
+export { useLogin, useCheckUser, useRefreshToken, useDataGroupByField };
