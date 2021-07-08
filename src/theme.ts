@@ -9,9 +9,13 @@ import '@fontsource/poppins/800.css';
 import '@fontsource/poppins/900.css';
 import grey from '@material-ui/core/colors/grey';
 
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  Theme,
+} from '@material-ui/core/styles';
 
-let theme = createMuiTheme({
+let theme: Theme = createMuiTheme({
   palette: {
     primary: {
       main: grey[400],

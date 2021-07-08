@@ -37,6 +37,7 @@ export default function AdminNavbarLinks() {
   const [username, setUsername] = useState<string>('');
 
   const { isError, isSuccess, error, data } = useCheckUser();
+
   const refreshToken = getRefreshToken();
 
   const {
@@ -61,15 +62,17 @@ export default function AdminNavbarLinks() {
     localStorage.setItem('username', data.data.data.username);
   }
 
-  if (isError) {
-    //@ts-ignore
-    if (error.response) {
+  useEffect(() => {
+    if (isError) {
       //@ts-ignore
-      if (error.response.data.message.includes('expired')) {
-        setOpen(true);
+      if (error.response) {
+        //@ts-ignore
+        if (error.response.data.message.includes('expired')) {
+          setOpen(true);
+        }
       }
     }
-  }
+  }, [isError]);
 
   if (didNotRefresh) {
     if (refreshError) {

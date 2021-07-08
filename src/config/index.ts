@@ -1,20 +1,5 @@
 import { useState, useEffect } from 'react';
 
-const getToken = () => {
-  const [accessToken, setAccessToken] = useState('');
-
-  useEffect(() => {
-    setAccessToken(localStorage.getItem('access_token'));
-  }, []);
-
-  const config = {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  };
-  return config;
-};
-
 const getRefreshToken = () => {
   const [refreshToken, setRefreshToken] = useState('');
 
@@ -25,4 +10,20 @@ const getRefreshToken = () => {
   return refreshToken;
 };
 
-export { getToken, getRefreshToken };
+const configOptions = () => {
+  if (typeof window === 'undefined') return {};
+
+  if (!window.localStorage.getItem('access_token')) return {};
+
+  const accessToken = window.localStorage.getItem('access_token');
+
+  if (!!accessToken) {
+    return {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+  }
+};
+
+export { getRefreshToken, configOptions };
