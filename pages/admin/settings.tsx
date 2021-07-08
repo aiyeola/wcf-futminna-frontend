@@ -14,6 +14,7 @@ import Button from '@material-ui/core/Button';
 import Admin from '@layouts/Admin';
 import { boxShadow } from '@styles/jss';
 import SettingsDialog from '@components/SettingsDialog';
+import { useAllAdmin } from '@api/index';
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -27,8 +28,8 @@ function TabPanel(props: TabPanelProps) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
       {...rest}
     >
       {value === index && <Grid container>{children}</Grid>}
@@ -61,48 +62,43 @@ const useStyles = makeStyles({
   button: {
     background: '#ff2020',
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: 600,
+    width: '100%',
+    maxWidth: 150,
     '&:hover': {
       color: '#ff2020',
-      background: '#fff',
-      outline: '#ff2020',
     },
   },
 });
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 function Settings() {
   const classes = useStyles();
 
   const [value, setValue] = useState<number>(0);
   const [open, setOpen] = useState<boolean>(false);
   const [username, setUsername] = useState<string>('');
+  const [adminUsername, setAdminUsername] = useState<string>('');
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = (
+    _e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    adminUsername: string,
+  ) => {
+    setOpen(true);
+    setAdminUsername(adminUsername);
+  };
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setUsername('');
+  };
 
   const handleChange = (_: React.ChangeEvent, newValue: number) =>
     setValue(newValue);
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
     setUsername(e.target.value);
+
+  const { data } = useAllAdmin();
 
   return (
     <div>
@@ -124,29 +120,33 @@ function Settings() {
                 <TableRow>
                   <TableCell
                     align="left"
-                    style={{ width: 250, fontWeight: 'bold' }}
+                    style={{ width: 100, fontWeight: 600 }}
                   >
                     Username
                   </TableCell>
-                  <TableCell style={{ width: 100, fontWeight: 'bold' }}>
+                  <TableCell style={{ width: 100, fontWeight: 600 }}>
                     Role
                   </TableCell>
-                  <TableCell style={{ width: 137 }}></TableCell>
+                  <TableCell style={{ width: 100 }}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {React.Children.toArray(
-                  rows.map((row) => (
-                    <TableRow>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.calories}</TableCell>
-                      <TableCell>
-                        <Button className={classes.button} onClick={handleOpen}>
-                          Revoke Access
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  )),
+                  data !== undefined &&
+                    data.data.data.map((rowData) => (
+                      <TableRow>
+                        <TableCell>{rowData.username}</TableCell>
+                        <TableCell>{rowData.userRole}</TableCell>
+                        <TableCell>
+                          <Button
+                            className={classes.button}
+                            onClick={(e) => handleOpen(e, rowData.username)}
+                          >
+                            Revoke Access
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    )),
                 )}
               </TableBody>
             </Table>
@@ -158,6 +158,7 @@ function Settings() {
         open={open}
         handleClose={handleClose}
         username={username}
+        adminUsername={adminUsername}
         handleInputChange={handleInputChange}
       />
     </div>
