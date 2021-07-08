@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import login from './loginReducer';
+import userRole from './userRoleReducer';
 
 export default combineReducers({
-  login,
+  userRole,
 });
