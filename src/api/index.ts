@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
 
-import { getToken } from '@config/index';
+import { configOptions } from '@config/index';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -20,26 +20,44 @@ const useLogin = () =>
   );
 
 const useCheckUser = () => {
-  const config = getToken();
-  return useQuery('checkUser', () =>
-    axios.get(`${API_URL}/check-user`, config),
+  return useQuery(
+    'checkUser',
+    () => axios.get(`${API_URL}/check-user`, configOptions()),
+    { retry: false },
   );
 };
 
 const useRefreshToken = () => {
-  const config = getToken();
   return useMutation((values: LoginRefreshDetails) =>
     axios
-      .post(`${API_URL}/auth/refresh`, values, config)
+      .post(`${API_URL}/auth/refresh`, values, configOptions())
       .then((res) => res.data),
   );
 };
 
 const useDataGroupByField = (field: string) => {
-  const config = getToken();
   return useQuery(['getBioData', field], ({ queryKey }) =>
-    axios.get(`${API_URL}/bio-data/?field=${queryKey[1]}`, config),
+    axios.get(`${API_URL}/bio-data/?field=${queryKey[1]}`, configOptions()),
   );
 };
 
-export { useLogin, useCheckUser, useRefreshToken, useDataGroupByField };
+const useAllData = () => {
+  return useQuery(['getBioData'], () =>
+    axios.get(`${API_URL}/bio-data`, configOptions()),
+  );
+};
+
+const useAllAdmin = () => {
+  return useQuery(['getAdmin'], () =>
+    axios.get(`${API_URL}/admin`, configOptions()),
+  );
+};
+
+export {
+  useLogin,
+  useCheckUser,
+  useRefreshToken,
+  useDataGroupByField,
+  useAllData,
+  useAllAdmin,
+};
