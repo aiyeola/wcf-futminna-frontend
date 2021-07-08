@@ -19,13 +19,14 @@ import useTheme from '@material-ui/core/styles/useTheme';
 import { useAllData } from '@api/index';
 import Modal from '@components/Modal';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Row {}
 
 export default function Table() {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down(1054));
   const [open, setOpen] = useState<boolean>(false);
-  const [modalData, setModalData] = useState<{}>({});
+  const [modalData, setModalData] = useState<Record<string, unknown>>({});
 
   const columns: Array<Column<Row>> = [
     { field: 'name', title: 'Name', width: 300 },
