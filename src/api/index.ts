@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import { configOptions } from '@config/index';
 
@@ -53,6 +53,22 @@ const useAllAdmin = () => {
   );
 };
 
+const useRevokeAccess = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    (username: string) =>
+      axios
+        .patch(`${API_URL}/revoke-access`, { username }, configOptions())
+        .then((res) => res.data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('getAdmin');
+      },
+    },
+  );
+};
+
 export {
   useLogin,
   useCheckUser,
@@ -60,4 +76,5 @@ export {
   useDataGroupByField,
   useAllData,
   useAllAdmin,
+  useRevokeAccess,
 };

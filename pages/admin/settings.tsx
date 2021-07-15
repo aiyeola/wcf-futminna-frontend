@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from 'react';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
@@ -14,7 +14,9 @@ import Button from '@material-ui/core/Button';
 import Admin from '@layouts/Admin';
 import { boxShadow } from '@styles/jss';
 import SettingsDialog from '@components/SettingsDialog';
-import { useAllAdmin } from '@api/index';
+import { useAllAdmin, useRevokeAccess } from '@api/index';
+import SnackBar, { SnackBarStateProps } from '@components/SnackBar';
+
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -73,11 +75,21 @@ const useStyles = makeStyles({
 
 function Settings() {
   const classes = useStyles();
-
+  const theme = useTheme();
   const [value, setValue] = useState<number>(0);
   const [open, setOpen] = useState<boolean>(false);
   const [username, setUsername] = useState<string>('');
   const [adminUsername, setAdminUsername] = useState<string>('');
+
+  const [alert, setAlert] = useState<SnackBarStateProps>({
+    open: false,
+    message: '',
+    backgroundColor: '',
+  });
+
+  const { mutate: revokeAccess, data: revokeResponse } = useRevokeAccess();
+
+  const { data } = useAllAdmin();
 
   const handleOpen = (
     _e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -89,6 +101,7 @@ function Settings() {
 
   const handleClose = () => {
     setOpen(false);
+    revokeAccess(adminUsername);
     setUsername('');
   };
 
@@ -98,7 +111,15 @@ function Settings() {
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
     setUsername(e.target.value);
 
-  const { data } = useAllAdmin();
+  useEffect(() => {
+    if (revokeResponse) {
+      setAlert({
+        open: true,
+        message: revokeResponse.message,
+        backgroundColor: theme.palette.success.main,
+      });
+    }
+  }, [revokeResponse]);
 
   return (
     <div>
@@ -133,20 +154,22 @@ function Settings() {
               <TableBody>
                 {React.Children.toArray(
                   data !== undefined &&
-                    data.data.data.map((rowData) => (
-                      <TableRow>
-                        <TableCell>{rowData.username}</TableCell>
-                        <TableCell>{rowData.userRole}</TableCell>
-                        <TableCell>
-                          <Button
-                            className={classes.button}
-                            onClick={(e) => handleOpen(e, rowData.username)}
-                          >
-                            Revoke Access
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    )),
+                    data.data.data
+                      .filter((data) => data.isAdmin === true)
+                      .map((rowData) => (
+                        <TableRow>
+                          <TableCell>{rowData.username}</TableCell>
+                          <TableCell>{rowData.userRole}</TableCell>
+                          <TableCell>
+                            <Button
+                              className={classes.button}
+                              onClick={(e) => handleOpen(e, rowData.username)}
+                            >
+                              Revoke Access
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      )),
                 )}
               </TableBody>
             </Table>
@@ -160,6 +183,13 @@ function Settings() {
         username={username}
         adminUsername={adminUsername}
         handleInputChange={handleInputChange}
+      />
+
+      <SnackBar
+        open={alert.open}
+        message={alert.message}
+        backgroundColor={alert.backgroundColor}
+        onClose={() => setAlert({ ...alert, open: false })}
       />
     </div>
   );
