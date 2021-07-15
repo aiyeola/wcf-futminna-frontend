@@ -77,6 +77,7 @@ export default function LoginDialog(props) {
           />
           <TextField
             autoFocus
+            autoComplete="off"
             value={props.password}
             onChange={props.handleInputChange}
             type="password"

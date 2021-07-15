@@ -69,6 +69,8 @@ export default function AdminNavbarLinks() {
         //@ts-ignore
         if (error.response.data.message.includes('expired')) {
           setOpen(true);
+        } else {
+          router.push(`login?next=${router.asPath}`);
         }
       }
     }
@@ -78,7 +80,7 @@ export default function AdminNavbarLinks() {
     if (refreshError) {
       router.push(
         //@ts-ignore
-        `login?next=${router.asPath}?error=${refreshError.response.data.message}`,
+        `login?next=${router.asPath}&error=${refreshError.response.data.message}`,
       );
     }
   }

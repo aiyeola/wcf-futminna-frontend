@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   button: {
     background: '#ffcc66',
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: 600,
   },
 }));
 
@@ -92,25 +92,41 @@ export default function LogIn() {
     login(loginDetails);
   };
 
-  if (isError) {
-    //@ts-ignore
-    if (error.response && error.response.status === 401) {
+  useEffect(() => {
+    router.prefetch('/admin/dashboard');
+  }, []);
+
+  useEffect(() => {
+    const routeError = router.query.error as string;
+    routeError &&
       setAlert({
         open: true,
-        //@ts-ignore
-        message: error.response.data.message,
+        message: routeError,
         backgroundColor: theme.palette.error.main,
       });
-      setValues({ ...values, username: '', password: '' });
-    } else {
-      setAlert({
-        open: true,
-        //@ts-ignore
-        message: error.message,
-        backgroundColor: theme.palette.error.main,
-      });
+  }, [router.query.error]);
+
+  useEffect(() => {
+    if (isError) {
+      //@ts-ignore
+      if (error.response && error.response.status === 401) {
+        setAlert({
+          open: true,
+          //@ts-ignore
+          message: error.response.data.message,
+          backgroundColor: theme.palette.error.main,
+        });
+        setValues({ ...values, username: '', password: '' });
+      } else {
+        setAlert({
+          open: true,
+          //@ts-ignore
+          message: error.message,
+          backgroundColor: theme.palette.error.main,
+        });
+      }
     }
-  }
+  }, [isError]);
 
   const nextRoute = router.query.next as string;
 
@@ -124,10 +140,6 @@ export default function LogIn() {
       router.push('/admin/dashboard');
     }
   }
-
-  useEffect(() => {
-    router.prefetch('/admin/dashboard');
-  }, []);
 
   return (
     <div className={classes.root}>

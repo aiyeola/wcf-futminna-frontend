@@ -91,7 +91,7 @@ function Dashboard() {
           />
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
-          <Card label={'Birthdays this week'} value={'----'} />
+          <Card label={'------ ---- ----- ---'} value={'----'} />
         </Grid>
 
         <Grid item xs={12} md={6} lg={4}>
