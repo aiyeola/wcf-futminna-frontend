@@ -105,6 +105,11 @@ function Settings() {
     setUsername('');
   };
 
+  const handleClickBackdrop = () => {
+    setOpen(false);
+    setUsername('');
+  };
+
   const handleChange = (_: React.ChangeEvent, newValue: number) =>
     setValue(newValue);
 
@@ -141,14 +146,14 @@ function Settings() {
                 <TableRow>
                   <TableCell
                     align="left"
-                    style={{ width: 100, fontWeight: 600 }}
+                    style={{ width: 90, fontWeight: 600 }}
                   >
                     Username
                   </TableCell>
-                  <TableCell style={{ width: 100, fontWeight: 600 }}>
+                  <TableCell style={{ width: 90, fontWeight: 600 }}>
                     Role
                   </TableCell>
-                  <TableCell style={{ width: 100 }}></TableCell>
+                  <TableCell style={{ width: 90 }}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -183,6 +188,7 @@ function Settings() {
         username={username}
         adminUsername={adminUsername}
         handleInputChange={handleInputChange}
+        handleClickBackdrop={handleClickBackdrop}
       />
 
       <SnackBar
