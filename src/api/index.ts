@@ -19,39 +19,32 @@ const useLogin = () =>
     axios.post(`${API_URL}/login`, values).then((res) => res.data),
   );
 
-const useCheckUser = () => {
-  return useQuery(
+const useCheckUser = () =>
+  useQuery(
     'checkUser',
     () => axios.get(`${API_URL}/check-user`, configOptions()),
     { retry: false },
   );
-};
 
-const useRefreshToken = () => {
-  return useMutation((values: LoginRefreshDetails) =>
+const useRefreshToken = () =>
+  useMutation((values: LoginRefreshDetails) =>
     axios
       .post(`${API_URL}/auth/refresh`, values, configOptions())
       .then((res) => res.data),
   );
-};
 
-const useDataGroupByField = (field: string) => {
-  return useQuery(['getBioData', field], ({ queryKey }) =>
+const useDataGroupByField = (field: string) =>
+  useQuery(['getBioData', field], ({ queryKey }) =>
     axios.get(`${API_URL}/bio-data/?field=${queryKey[1]}`, configOptions()),
   );
-};
 
-const useAllData = () => {
-  return useQuery(['getBioData'], () =>
+const useAllData = () =>
+  useQuery(['getBioData'], () =>
     axios.get(`${API_URL}/bio-data`, configOptions()),
   );
-};
 
-const useAllAdmin = () => {
-  return useQuery(['getAdmin'], () =>
-    axios.get(`${API_URL}/admin`, configOptions()),
-  );
-};
+const useAllAdmin = () =>
+  useQuery(['getAdmin'], () => axios.get(`${API_URL}/admin`, configOptions()));
 
 const useRevokeAccess = () => {
   const queryClient = useQueryClient();
@@ -69,6 +62,13 @@ const useRevokeAccess = () => {
   );
 };
 
+const useLogOut = () =>
+  useMutation(() =>
+    axios
+      .post(`${API_URL}/logout`, {}, configOptions())
+      .then((res) => res.data),
+  );
+
 export {
   useLogin,
   useCheckUser,
@@ -77,4 +77,5 @@ export {
   useAllData,
   useAllAdmin,
   useRevokeAccess,
+  useLogOut,
 };
