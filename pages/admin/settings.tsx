@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
@@ -10,17 +10,26 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Admin from '@layouts/Admin';
 import { boxShadow } from '@styles/jss';
 import SettingsDialog from '@components/SettingsDialog';
-import { useAllAdmin, useRevokeAccess } from '@api/index';
+import { useAllAdmin, useRevokeAccess, useSignUp } from '@api/index';
 import SnackBar, { SnackBarStateProps } from '@components/SnackBar';
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
+}
+interface State {
+  username: string;
+  password: string;
+  confirmPassword: string;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -46,7 +55,7 @@ function a11yProps(index: number) {
   };
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
   background: {
     background: '#fff',
     borderRadius: 6,
@@ -57,6 +66,9 @@ const useStyles = makeStyles({
     background: '#ffcc66',
     height: 3,
     borderRadius: 6,
+  },
+  tableRoot: {
+    minHeight: '74vh',
   },
   table: {
     minWidth: 300,
@@ -71,7 +83,26 @@ const useStyles = makeStyles({
       color: '#ff2020',
     },
   },
-});
+  margin: {
+    marginBottom: theme.spacing(3),
+  },
+  textField: {
+    width: '15rem',
+  },
+  root: {
+    height: '74vh',
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  signUpButton: {
+    background: '#ffcc66',
+    color: '#fff',
+    fontWeight: 600,
+  },
+}));
 
 function Settings() {
   const classes = useStyles();
@@ -80,6 +111,11 @@ function Settings() {
   const [open, setOpen] = useState<boolean>(false);
   const [username, setUsername] = useState<string>('');
   const [adminUsername, setAdminUsername] = useState<string>('');
+  const [values, setValues] = useState<State>({
+    username: '',
+    password: '',
+    confirmPassword: '',
+  });
 
   const [alert, setAlert] = useState<SnackBarStateProps>({
     open: false,
@@ -90,6 +126,15 @@ function Settings() {
   const { mutate: revokeAccess, data: revokeResponse } = useRevokeAccess();
 
   const { data } = useAllAdmin();
+
+  const {
+    mutate: signup,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+    data: signUpData,
+  } = useSignUp();
 
   const handleOpen = (
     _e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -113,8 +158,34 @@ function Settings() {
   const handleChange = (_: React.ChangeEvent, newValue: number) =>
     setValue(newValue);
 
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
-    setUsername(e.target.value);
+  const handleInputChange =
+    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValues({ ...values, [prop]: event.target.value });
+    };
+
+  const handleUsernameInputChange: React.ChangeEventHandler<HTMLInputElement> =
+    (e) => setUsername(e.target.value);
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const { username, password, confirmPassword } = values;
+    if (password !== confirmPassword) {
+      setAlert({
+        open: true,
+        message: 'Password mismatch',
+        backgroundColor: theme.palette.error.main,
+      });
+      setValues({ username: '', password: '', confirmPassword: '' });
+    } else {
+      const registerDetails = {
+        username,
+        password,
+      };
+
+      console.log('registerDetails: ', registerDetails);
+      signup(registerDetails);
+    }
+  };
 
   useEffect(() => {
     if (revokeResponse) {
@@ -125,6 +196,32 @@ function Settings() {
       });
     }
   }, [revokeResponse]);
+
+  useEffect(() => {
+    if (isError) {
+      //@ts-ignore
+      if (error.response) {
+        setAlert({
+          open: true,
+          //@ts-ignore
+          message: error.response.data.message,
+          backgroundColor: theme.palette.error.main,
+        });
+        setValues({ username: '', password: '', confirmPassword: '' });
+      }
+    }
+  }, [isError]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setAlert({
+        open: true,
+        message: signUpData.message,
+        backgroundColor: theme.palette.success.main,
+      });
+      setValues({ username: '', password: '', confirmPassword: '' });
+    }
+  }, [isSuccess]);
 
   return (
     <div>
@@ -137,10 +234,11 @@ function Settings() {
         }}
       >
         <Tab label="Access" {...a11yProps(0)} />
+        <Tab label="Register" {...a11yProps(1)} />
       </Tabs>
       <div className={classes.background}>
         <TabPanel value={value} index={0}>
-          <TableContainer>
+          <TableContainer className={classes.tableRoot}>
             <Table className={classes.table} aria-label="user-role-table">
               <TableHead>
                 <TableRow>
@@ -180,6 +278,66 @@ function Settings() {
             </Table>
           </TableContainer>
         </TabPanel>
+
+        <TabPanel value={value} index={1}>
+          <div className={classes.root}>
+            <form onSubmit={handleSubmit}>
+              <div className={classes.margin}>
+                <FormControl className={classes.textField}>
+                  <InputLabel htmlFor="username">Username</InputLabel>
+                  <OutlinedInput
+                    id="username"
+                    value={values.username}
+                    onChange={handleInputChange('username')}
+                    aria-describedby="username"
+                    labelWidth={80}
+                    required
+                  />
+                </FormControl>
+              </div>
+
+              <div className={classes.margin}>
+                <FormControl className={classes.textField}>
+                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <OutlinedInput
+                    id="password"
+                    type="password"
+                    value={values.password}
+                    onChange={handleInputChange('password')}
+                    aria-describedby="password"
+                    required
+                    labelWidth={75}
+                  />
+                </FormControl>
+              </div>
+
+              <div className={classes.margin}>
+                <FormControl className={classes.textField}>
+                  <InputLabel htmlFor="password">Confirm Password</InputLabel>
+                  <OutlinedInput
+                    id="confirm-password"
+                    type="password"
+                    value={values.confirmPassword}
+                    onChange={handleInputChange('confirmPassword')}
+                    aria-describedby="confirm-password"
+                    required
+                    labelWidth={147}
+                  />
+                </FormControl>
+              </div>
+
+              <div>
+                <Button
+                  type="submit"
+                  className={classes.signUpButton}
+                  disabled={isLoading}
+                >
+                  {isLoading ? <CircularProgress /> : 'Submit'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </TabPanel>
       </div>
 
       <SettingsDialog
@@ -187,7 +345,7 @@ function Settings() {
         handleClose={handleClose}
         username={username}
         adminUsername={adminUsername}
-        handleInputChange={handleInputChange}
+        handleInputChange={handleUsernameInputChange}
         handleClickBackdrop={handleClickBackdrop}
       />
 

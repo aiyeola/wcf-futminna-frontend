@@ -5,17 +5,17 @@ import { configOptions } from '@config/index';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-type LoginDetails = {
+type UserDetails = {
   username: string;
   password: string;
 };
 
-interface LoginRefreshDetails extends LoginDetails {
+interface LoginRefreshDetails extends UserDetails {
   refreshToken: string;
 }
 
 const useLogin = () =>
-  useMutation((values: LoginDetails) =>
+  useMutation((values: UserDetails) =>
     axios.post(`${API_URL}/login`, values).then((res) => res.data),
   );
 
@@ -69,6 +69,11 @@ const useLogOut = () =>
       .then((res) => res.data),
   );
 
+const useSignUp = () =>
+  useMutation((values: UserDetails) =>
+    axios.post(`${API_URL}/sign-up`, values).then((res) => res.data),
+  );
+
 export {
   useLogin,
   useCheckUser,
@@ -78,4 +83,5 @@ export {
   useAllAdmin,
   useRevokeAccess,
   useLogOut,
+  useSignUp,
 };
