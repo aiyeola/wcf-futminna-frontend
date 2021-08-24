@@ -68,6 +68,11 @@ let theme: Theme = createMuiTheme({
         textTransform: 'none',
       },
     },
+    MuiListItemIcon: {
+      root: {
+        minWidth: 40,
+      },
+    },
   },
 });
 

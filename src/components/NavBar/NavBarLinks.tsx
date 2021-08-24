@@ -132,7 +132,9 @@ export default function AdminNavbarLinks() {
             <PersonRoundedIcon />
           </Icon>
           <Typography className={classes.date}>
-            {isSuccess && data.data.data.userRole}
+            {isSuccess && data.data.data.userRole.includes('Super')
+              ? 'Super Admin'
+              : isSuccess && data.data.data.userRole}
           </Typography>
         </div>
       </div>

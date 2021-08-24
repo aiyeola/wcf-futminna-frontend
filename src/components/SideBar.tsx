@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -7,9 +8,11 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ExitToAppRoundedIcon from '@material-ui/icons/ExitToAppRounded';
 
 import Link from '@components/Link';
 import { transition } from '@styles/jss';
+import { useLogOut, useCheckUser } from '@api/index';
 
 const useStyles = makeStyles({
   drawerPaper: {
@@ -22,6 +25,7 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    height: '100vh',
   },
   img: {
     width: 100,
@@ -50,6 +54,10 @@ const useStyles = makeStyles({
     borderRadius: 6,
     opacity: '.8',
   },
+  logoutAction: {
+    marginTop: 'auto',
+    marginBottom: '2rem',
+  },
 });
 
 export default function Sidebar(props) {
@@ -57,32 +65,70 @@ export default function Sidebar(props) {
 
   const classes = useStyles();
 
-  function activeRoute(routeName) {
-    return router.route.indexOf(routeName) === 0 ? true : false;
-  }
+  const { mutate: logout, isLoading, isSuccess } = useLogOut();
+  const { isSuccess: userChecked, data } = useCheckUser();
+
+  const activeRoute = (routeName) =>
+    router.route.indexOf(routeName) === 0 ? true : false;
+
+  const handleLogOut = () => logout();
+
+  useEffect(() => {
+    if (isSuccess) {
+      window.localStorage.removeItem('access_token');
+      window.localStorage.removeItem('refresh_token');
+      window.localStorage.removeItem('username');
+      router.push('/admin/login');
+    }
+  }, [isSuccess]);
 
   const links = (
     <List className={classes.list}>
-      {props.routes.map((route, index) => {
-        const activeClassName = clsx({
-          [classes.activeLink]: activeRoute(`${route.layout}${route.path}`),
-        });
+      {userChecked && data.data.data.userRole !== 'Super Administrator'
+        ? props.routes
+            .filter((route) => route.name !== 'Settings')
+            .map((route, index) => {
+              const activeClassName = clsx({
+                [classes.activeLink]: activeRoute(
+                  `${route.layout}${route.path}`,
+                ),
+              });
 
-        return (
-          <ListItem
-            button
-            key={`${route.name}-${index}`}
-            component={Link}
-            href={`${route.layout}${route.path}`}
-            className={clsx(classes.listItem, activeClassName)}
-          >
-            <ListItemIcon>
-              <route.icon className={classes.item} />
-            </ListItemIcon>
-            <ListItemText primary={route.name} className={classes.item} />
-          </ListItem>
-        );
-      })}
+              return (
+                <ListItem
+                  button
+                  key={`${route.name}-${index}`}
+                  component={Link}
+                  href={`${route.layout}${route.path}`}
+                  className={clsx(classes.listItem, activeClassName)}
+                >
+                  <ListItemIcon>
+                    <route.icon className={classes.item} />
+                  </ListItemIcon>
+                  <ListItemText primary={route.name} className={classes.item} />
+                </ListItem>
+              );
+            })
+        : props.routes.map((route, index) => {
+            const activeClassName = clsx({
+              [classes.activeLink]: activeRoute(`${route.layout}${route.path}`),
+            });
+
+            return (
+              <ListItem
+                button
+                key={`${route.name}-${index}`}
+                component={Link}
+                href={`${route.layout}${route.path}`}
+                className={clsx(classes.listItem, activeClassName)}
+              >
+                <ListItemIcon>
+                  <route.icon className={classes.item} />
+                </ListItemIcon>
+                <ListItemText primary={route.name} className={classes.item} />
+              </ListItem>
+            );
+          })}
     </List>
   );
   return (
@@ -100,6 +146,27 @@ export default function Sidebar(props) {
               <img src="/images/logo.jpg" alt="logo" className={classes.img} />
             </Link>
             {links}
+            <div className={classes.logoutAction}>
+              <List className={classes.list}>
+                <ListItem
+                  button
+                  onClick={handleLogOut}
+                  className={clsx(classes.listItem)}
+                >
+                  {isLoading || isSuccess ? null : (
+                    <ListItemIcon>
+                      <ExitToAppRoundedIcon className={classes.item} />
+                    </ListItemIcon>
+                  )}
+                  <ListItemText
+                    primary={
+                      isLoading || isSuccess ? 'Logging out...' : 'Logout'
+                    }
+                    className={classes.item}
+                  />
+                </ListItem>
+              </List>
+            </div>
           </div>
         </Drawer>
       </Hidden>
@@ -122,6 +189,27 @@ export default function Sidebar(props) {
               <img src="/images/logo.jpg" alt="logo" className={classes.img} />
             </Link>
             {links}
+            <div className={classes.logoutAction}>
+              <List className={classes.list}>
+                <ListItem
+                  button
+                  onClick={handleLogOut}
+                  className={clsx(classes.listItem)}
+                >
+                  {isLoading || isSuccess ? null : (
+                    <ListItemIcon>
+                      <ExitToAppRoundedIcon className={classes.item} />
+                    </ListItemIcon>
+                  )}
+                  <ListItemText
+                    primary={
+                      isLoading || isSuccess ? 'Logging out...' : 'Logout'
+                    }
+                    className={classes.item}
+                  />
+                </ListItem>
+              </List>
+            </div>
           </div>
         </Drawer>
       </Hidden>

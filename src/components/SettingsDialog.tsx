@@ -56,7 +56,7 @@ export default function SettingsDialog(props) {
 
   return (
     <Dialog
-      onClose={props.handleClose}
+      onClose={props.handleClickBackdrop}
       aria-labelledby="settings-dialog"
       open={props.open}
       maxWidth="xs"
@@ -68,11 +68,11 @@ export default function SettingsDialog(props) {
         className={classes.dialogTitle}
       >
         <Typography>Are you absolutely sure?</Typography>
-        {props.handleClose ? (
+        {props.handleClickBackdrop ? (
           <IconButton
             aria-label="close"
             className={classes.closeButton}
-            onClick={props.handleClose}
+            onClick={props.handleClickBackdrop}
           >
             <CloseIcon />
           </IconButton>
